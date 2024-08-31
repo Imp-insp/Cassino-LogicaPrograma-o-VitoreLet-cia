@@ -44,7 +44,7 @@ namespace Cassino
             {
                 double result = 0;
                 Console.WriteLine("Digite o quanto você quer apostar");
-                double dinhApos = Convert.ToDouble(Console.ReadLine());
+                double dinhApos = Convert.ToDouble(Console.ReadLine()); // o jogador pode apostar quanto dinheiro quiser, mesmo dinheiro que não tenha. Se perder o dinheiro q não tem, ficara com dinheiro negativo (oque não o impede de continuar apostando)
                 Console.Clear ();
                 dinhJog = dinhJog - dinhApos;
                 dinhJog = dinhJog + jogoApos(dinhApos);
