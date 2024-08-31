@@ -1,1 +1,89 @@
+using System;
+
+namespace Cassino
+{
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Aperte <enter> para começar");
+            Console.ReadLine(); // Eu esqueçi o codigo que verifica se vc clicou enter, ent coloquei Console.ReadLine
+            Console.Clear();
+
+            double dinhJog = 10;
+            bool exit = false;
+            while (exit == !true) // Função Main que verifica se o jogar quer apostar dnv ou fechar o programa
+            {
+
+                Console.WriteLine("Bem Vindo ao cassino, você possui " + dinhJog + " dinheiro"); // Alterar para se (caso nn seja a primeira vez do jogador nesta aba) aparacer "bem vindo de volta"
+                Console.WriteLine("Oque você gostaria de fazer?");
+                Console.WriteLine("1- Vou apostar");
+                Console.WriteLine("2- Vou embora");
+                int respIni = Convert.ToInt32(Console.ReadLine());
+
+                if (respIni == 1)
+                {
+                    dinhJog = aposta(dinhJog);
+                }
+                else if (respIni == 2)
+                {
+                    Console.Write("Tchau Tchau");
+                    exit = true;
+                }
+                else
+                {
+                    Console.WriteLine("error, digitou um número não válido");
+                    exit = true;
+                }
+
+             
+            }
+
+            static double aposta(double dinhJog) // Função ativada quando o jogador decide apostar novamente, serve para checar o quanto de dinheiro o jogador vai apostar e retorna o valor depois da aposta para a função Main novamente
+            {
+                double result = 0;
+                Console.WriteLine("Digite o quanto você quer apostar");
+                double dinhApos = Convert.ToDouble(Console.ReadLine());
+                Console.Clear ();
+                dinhJog = dinhJog - dinhApos;
+                dinhJog = dinhJog + jogoApos(dinhApos);
+
+                Console.WriteLine("Agora vc possui " + dinhJog);
+
+                Console.WriteLine("Aperte <enter> para continuar");
+                Console.ReadLine();
+                Console.Clear();
+
+                result = dinhJog;
+                return result;
+            }
+
+            static double jogoApos (double dinhApos) // Função que simula o jogo da aposta e rotorna o valor final adquirido 
+            {
+                double result = 0;
+
+                Random rnd = new Random();
+                int rand1 = rnd.Next(10) + 1;
+
+                Console.WriteLine("Escolha um número entre 1 a 10");
+                Console.WriteLine("Ei, o número sorteado foi " + rand1); // Normalmente Esta linha de código nao apareceria para o jogador, mas está aqui pra facilitar o processo de testagem do código
+                int numEsc = Convert.ToInt32(Console.ReadLine());
+
+                if (numEsc == rand1)
+                {
+                    Console.WriteLine("Você acertou");
+                    result = dinhApos * 2;
+                }
+                else
+                {
+                    Console.WriteLine("Você errou");
+                    result = dinhApos - dinhApos;
+                }
+
+                return result;
+            }
+        }
+    }
+}
 
