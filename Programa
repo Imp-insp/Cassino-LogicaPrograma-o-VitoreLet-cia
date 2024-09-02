@@ -1,5 +1,6 @@
 using System;
 
+
 namespace Cassino
 {
 
@@ -10,25 +11,85 @@ namespace Cassino
             Console.WriteLine("Aperte <enter> para começar");
             Console.ReadLine(); // Eu esqueçi o codigo que verifica se vc clicou enter, ent coloquei Console.ReadLine
             Console.Clear();
-
+            
             double dinhJog = 10;
+            // items
+            bool hasbola = false;
+            bool hasimã = false;
+            //eventos
+            bool hasDice = false;
+            bool hasStar = false;
             bool exit = false;
-            while (exit == !true) // Função Main que verifica se o jogar quer apostar dnv ou fechar o programa
+            while (!exit) // Função Main que verifica se o jogar quer apostar dnv ou fechar o programa
             {
 
-                Console.WriteLine("Bem Vindo ao cassino, você possui " + dinhJog + " dinheiro"); // Alterar para se (caso nn seja a primeira vez do jogador nesta aba) aparacer "bem vindo de volta"
+                Console.WriteLine("Bem Vindo ao cassino, você possui " + dinhJog + " dinheiro"); 
                 Console.WriteLine("Oque você gostaria de fazer?");
                 Console.WriteLine("1- Vou apostar");
-                Console.WriteLine("2- Vou embora");
+                Console.WriteLine("2- Vou na loja");
+                Console.WriteLine("3- Vou embora");
+                if (hasStar) { Console.WriteLine("4 - Seguir a estrela"); }  
                 int respIni = Convert.ToInt32(Console.ReadLine());
+
+                if (dinhJog <= 0)
+                {
+                    Console.WriteLine("Desculpa seu dinheiro acabou");
+
+                    if (dinhJog < 0)
+                    {
+                        Console.WriteLine("Você possui uma divida de " + dinhJog + "reais");
+                    }
+                    Console.ReadLine();
+                    break;
+                }
 
                 if (respIni == 1)
                 {
-                    dinhJog = aposta(dinhJog);
+                    dinhJog = aposta(dinhJog, hasDice, hasbola, hasimã);
                 }
                 else if (respIni == 2)
                 {
+                    int itemAdqui = loja(dinhJog, hasDice, hasbola, hasimã);
+                    if (itemAdqui == 0)
+                    {
+                        Console.WriteLine("Você não comprou nada");
+                        Console.WriteLine("Aperte <enter> para continuar");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
+                    else if (itemAdqui == 1)
+                    {
+                        dinhJog = dinhJog  - 25;
+                        hasDice = true;
+                    }
+                    else if (itemAdqui == 2) 
+                    {
+                        dinhJog = dinhJog  - 7;
+                        hasbola = true;
+                    }
+                    else if (itemAdqui == 3)
+                    {
+                        dinhJog = dinhJog - 12;
+                        hasimã = true;
+                    }
+                    else if (itemAdqui == 4)
+                    {
+                        dinhJog = dinhJog - 55;
+                        hasStar = true;
+                    }
+                }
+                else if (respIni == 3)
+                {
                     Console.Write("Tchau Tchau");
+                    exit = true;
+                }
+                else if (respIni == 4 && hasStar)
+                {
+                    Console.Clear();
+                    Console.WriteLine("A estrela ilumina a escuridão e você a segue");
+                    Console.WriteLine("Apostar é legal, mas não é a solução. Obrigado por jogar!");
+                    Console.WriteLine("Pressione <enter> para sair");
+                    Console.ReadLine();
                     exit = true;
                 }
                 else
@@ -37,53 +98,179 @@ namespace Cassino
                     exit = true;
                 }
 
-             
+               
             }
 
-            static double aposta(double dinhJog) // Função ativada quando o jogador decide apostar novamente, serve para checar o quanto de dinheiro o jogador vai apostar e retorna o valor depois da aposta para a função Main novamente
+            static int loja(double dinhJog, bool hasDice, bool hasbola, bool hasimã)
             {
-                double result = 0;
-                Console.WriteLine("Digite o quanto você quer apostar");
-                double dinhApos = Convert.ToDouble(Console.ReadLine()); // o jogador pode apostar quanto dinheiro quiser, mesmo dinheiro que não tenha. Se perder o dinheiro q não tem, ficara com dinheiro negativo (oque não o impede de continuar apostando)
+                int result = 0;
                 Console.Clear ();
-                dinhJog = dinhJog - dinhApos;
-                dinhJog = dinhJog + jogoApos(dinhApos);
+                Console.WriteLine("Oque você gostaria de comprar");
+                if (!hasDice) { Console.WriteLine("1- dados : 25 fichas"); } else { return result; }
+                if (!hasbola) { Console.WriteLine("2- bola de cristal (jogo da roleta) : 7 fichas"); } else { return result; }
+                if (!hasimã) { Console.WriteLine("3- imã de segunda mão (jogo do dado) : 12 fichas"); } else { return result; }
+                Console.WriteLine("4- estrela: 55 fichas");
+                int resposJog = Convert.ToInt32(Console.ReadLine());
 
-                Console.WriteLine("Agora vc possui " + dinhJog);
-
-                Console.WriteLine("Aperte <enter> para continuar");
-                Console.ReadLine();
-                Console.Clear();
-
-                result = dinhJog;
-                return result;
-            }
-
-            static double jogoApos (double dinhApos) // Função que simula o jogo da aposta e rotorna o valor final adquirido 
-            {
-                double result = 0;
-
-                Random rnd = new Random();
-                int rand1 = rnd.Next(10) + 1;
-
-                Console.WriteLine("Escolha um número entre 1 a 10");
-                Console.WriteLine("Ei, o número sorteado foi " + rand1); // Normalmente Esta linha de código nao apareceria para o jogador, mas está aqui pra facilitar o processo de testagem do código
-                int numEsc = Convert.ToInt32(Console.ReadLine());
-
-                if (numEsc == rand1)
+                if (resposJog == 1 && dinhJog >= 26 && !hasDice)
                 {
-                    Console.WriteLine("Você acertou");
-                    result = dinhApos * 2;
+                    result = 1;
+                }
+                else if (resposJog == 2 && dinhJog >= 8)
+                {
+                    result = 2;
+                }
+                else if (resposJog == 3 && dinhJog >= 13)
+                {
+                    result = 3;
+                }
+                else if (resposJog == 4 && dinhJog >= 56)
+                {
+                    result = 4;
                 }
                 else
                 {
-                    Console.WriteLine("Você errou");
-                    result = dinhApos - dinhApos;
+                    Console.Clear();
+                    Console.WriteLine("Você não tem dinheiro para isso, ou o item não existe");
+                    return result;
                 }
-
                 return result;
             }
+
+            static double aposta(double dinhJog, bool hasDice, bool hasbola, bool hasimã) // Função ativada quando o jogador decide apostar novamente, serve para checar o quanto de dinheiro o jogador vai apostar e retorna o valor depois da aposta para a função Main novamente
+            {
+                double result = 0;
+
+                Console.Clear();
+                Console.WriteLine("Oque você gostaria de jogar?");
+                Console.WriteLine("1- Roleta");
+                if (hasDice) { Console.WriteLine("2- Dados"); }
+                int resApos = Convert.ToInt32(Console.ReadLine());
+
+                Console.WriteLine("Digite o quanto você quer apostar");
+                double dinhApos = Convert.ToDouble(Console.ReadLine());
+                Console.Clear();
+                if (dinhJog < dinhApos)
+                {
+                    Console.WriteLine("Você não tem todo esse dinheiro");
+                    Console.ReadLine();
+                    return dinhJog;
+                }
+                dinhJog = dinhJog - dinhApos;
+
+                if (resApos == 1)
+                {
+                    
+                    dinhJog = dinhJog + jogoRoleta(dinhApos, hasbola);
+
+                    Console.WriteLine("Agora vc possui " + dinhJog);
+
+                    Console.WriteLine("Aperte <enter> para continuar");
+                    Console.ReadLine();
+                    Console.Clear();
+
+                    result = dinhJog;
+                    return result;
+                }
+                else if (resApos == 2 && hasDice)
+                {
+                    dinhJog = dinhJog + jogoDado(dinhApos, hasimã);
+
+                    Console.WriteLine("Agora vc possui " + dinhJog);
+
+                    Console.WriteLine("Aperte <enter> para continuar");
+                    Console.ReadLine();
+                    Console.Clear();
+
+                    result = dinhJog;
+                    return result;
+                }
+                else
+                {
+                    Console.WriteLine("Você digitou um número invalido");
+                    return aposta(dinhJog, hasDice, hasbola, hasimã);
+                }
+
+                static double jogoRoleta(double dinhApos, bool hasbola) // Função que simula o jogo da aposta e rotorna o valor final adquirido 
+                {
+                    double result = 0;                   
+                    bool épar = false;
+                    Random rnd = new Random();
+                    int rand1 = rnd.Next(5) + 1; // número deve ser adicionado em 1 porque não contamos o 0 quando requisitando input do jogador.
+
+                    if (rand1 == 2 || rand1 == 4)
+                    {
+                        épar = true;
+                    }
+
+                    Console.WriteLine("Escolha um número entre 1 a 5");
+                    if (hasbola && épar)
+                    {
+                        { Console.WriteLine("A bola de cristal sussura que o número sorteado é par"); }
+                    }
+                    else if (hasbola && !épar){ Console.WriteLine("O número sorteado é impar"); }
+                    // Console.WriteLine("Ei, o número sorteado foi " + rand1); // Normalmente Esta linha de código nao apareceria para o jogador, mas está aqui pra facilitar o processo de testagem do código
+                    int numEsc = Convert.ToInt32(Console.ReadLine());
+
+                    if (numEsc == rand1)
+                    {
+                        Console.WriteLine("Você acertou");
+                        result = dinhApos * 2;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Você errou");
+                        result = 0;
+                    }
+                    
+
+                    return result;
+                }
+
+                static double jogoDado(double dinhApos, bool hasimã) // Função que simula o jogo da aposta e rotorna o valor final adquirido 
+                {
+                    double result = 0;
+                    int multi= 0;
+                    int rand1 = 6;
+                    int rand2 = 6;
+                    Random rnd = new Random();
+                    if (!hasimã)
+                    {
+                         rand1 = rnd.Next(6) + 1;
+                         rand2 = rnd.Next(6) + 1;
+                    }
+                    else if (hasimã) 
+                    {
+                         rand1 = rnd.Next(5) + 2;
+                         rand2 = rnd.Next(5) + 2;
+                    }
+                   
+                    Console.WriteLine("Dois dados de 6 faces serão jogados, escolha dois números da sorte. Acertar um número concede algumas fichas, acertas os dois concede muitas fichas");
+                    if (hasimã) { Console.WriteLine("O imã está em posição, o dado não pode mais cair no número 1"); }
+                    Console.Write("Escolha o primeiro número: ");
+                    int numEsc1 = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("Escolha o segundo número: ");
+                    int numEsc2 = Convert.ToInt32(Console.ReadLine());
+
+                    if (numEsc1 == rand1 || numEsc1 == rand2)
+                    { multi++; }
+
+                    if (numEsc2 == rand1 || numEsc2 == rand2)
+                    { multi++; }
+
+                    if (multi == 0)
+                    { result = 0; }
+                    else if (multi == 1) 
+                    { result = dinhApos + dinhApos / 2; }
+                    else if (multi == 2)
+                    { result = dinhApos * 2.5; }
+
+                    return result;
+                }
+            }
         }
+
     }
 }
+
 
